@@ -11,8 +11,6 @@ import codecs, json, re, sys, time
 import multiprocessing
 import langid
 
-LANG8_PATH = 'lang-8-20111007-L1-v2.dat'
-
 num_jobs = 8
 
 sline_pattern = re.compile(r'\[sline\].*?\[/sline\]')
@@ -43,8 +41,8 @@ def process(line):
     return sentence_pairs
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print "specify source and target output files!"
+    if len(sys.argv) != 4:
+        print "usage: <raw input> <output.src> <output.tgt>"
         sys.exit(1)
 
     print "Start processing"
