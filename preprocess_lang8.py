@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 
 '''
 Preprocessing script for Lang-8 v2 data. This script will:

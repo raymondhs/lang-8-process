@@ -16,7 +16,7 @@ fi
 
 python preprocess_lang8.py lang-8-20111007-L1-v2.dat lang-8-v2.src lang-8-v2.tgt
 for suf in src tgt; do
-  cat lang-8-v2.$suf $f \
+  cat lang-8-v2.$suf \
     | perl replace-unicode-punctuation.perl \
     | perl remove-non-printing-char.perl \
     | perl normalize-punctuation.perl \
