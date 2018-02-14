@@ -48,9 +48,9 @@ if __name__ == '__main__':
     print "Start processing"
     start_time = time.time()
     pool = multiprocessing.Pool(num_jobs)
-    results = [pool.apply_async(process, (line,)) for line in open(LANG8_PATH)]
-    with open(sys.argv[1], 'w') as src_f, \
-         open(sys.argv[2], 'w') as tgt_f:
+    results = [pool.apply_async(process, (line,)) for line in open(sys.argv[1])]
+    with open(sys.argv[2], 'w') as src_f, \
+         open(sys.argv[3], 'w') as tgt_f:
         for sentence_pairs in results:
             for src_sent, tgt_sent in sentence_pairs.get():
                 src_f.write(src_sent.encode('utf-8')+'\n')
