@@ -11,14 +11,14 @@ import codecs, json, re, sys, time
 import multiprocessing
 import langid
 
-num_jobs = 8
+NUM_JOBS = 8
 
-sline_pattern = re.compile(r'\[sline\].*?\[/sline\]')
+SLINE_PATTERN = re.compile(r'\[sline\].*?\[/sline\]')
 
 def remove_tags(line):
     for tag in ['[f-blue]','[/f-blue]','[f-red]','[/f-red]']:
         line = line.replace(tag, '')
-    line = sline_pattern.sub('', line)
+    line = SLINE_PATTERN.sub('', line)
     line = line.replace('[/sline]', '')
     return re.sub('\s+', ' ', line)
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     print "Start processing"
     start_time = time.time()
-    pool = multiprocessing.Pool(num_jobs)
+    pool = multiprocessing.Pool(NUM_JOBS)
     results = [pool.apply_async(process, (line,)) for line in open(sys.argv[1])]
     with open(sys.argv[2], 'w') as src_f, \
          open(sys.argv[3], 'w') as tgt_f:
