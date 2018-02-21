@@ -16,7 +16,7 @@ NUM_JOBS = 8
 SLINE_PATTERN = re.compile(r'\[sline\].*?\[/sline\]')
 
 def remove_tags(line):
-    for tag in ['[f-blue]','[/f-blue]','[f-red]','[/f-red]']:
+    for tag in ['[f-blue]','[/f-blue]','[f-red]','[/f-red]','[f-bold]','[/f-bold]']:
         line = line.replace(tag, '')
     line = SLINE_PATTERN.sub('', line)
     line = line.replace('[/sline]', '')
