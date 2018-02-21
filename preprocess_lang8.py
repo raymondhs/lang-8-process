@@ -15,6 +15,8 @@ NUM_JOBS = 8
 
 SLINE_PATTERN = re.compile(r'\[sline\].*?\[/sline\]')
 
+SENT_END = ['.','?','!','"',"'"]
+
 def remove_tags(line):
     for tag in ['[f-blue]','[/f-blue]','[f-red]','[/f-red]','[f-bold]','[/f-bold]']:
         line = line.replace(tag, '')
@@ -27,17 +29,23 @@ def process(line):
     row = json.loads(re.sub(r'[\x00-\x1F]+', '', line))
     if row[2] == 'English':
         for i in range(len(row[4])):
-            src_sent = row[4][i]
+            src_sent = row[4][i].strip()
             src_lang, _ = langid.classify(src_sent)
-            if src_lang != 'en': continue
+            if src_lang != 'en':
+                continue
             for tgt_sent in row[5][i]:
-                if not tgt_sent: continue
-                if tgt_sent == src_sent: continue
+                if not tgt_sent or tgt_sent.strip() == src_sent:
+                    continue
                 tgt_lang, _ = langid.classify(tgt_sent)
-                if tgt_lang != 'en': continue
+                if tgt_lang != 'en':
+                    continue
                 src_sent = re.sub('\s+', ' ', src_sent)
                 tgt_sent = remove_tags(tgt_sent)
-                sentence_pairs.append((src_sent, tgt_sent))
+                tgt_sent = tgt_sent.strip()
+                if tgt_sent \
+                   and tgt_sent[0] == tgt_sent[0].upper() \
+                   and tgt_sent[-1] in SENT_END:
+                    sentence_pairs.append((src_sent, tgt_sent))
     return sentence_pairs
 
 if __name__ == '__main__':
