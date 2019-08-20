@@ -1,28 +1,26 @@
 #!/bin/bash
 
-# Download preprocessing scripts from Moses
-if [ ! -f replace-unicode-punctuation.perl ]; then
-  wget https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/replace-unicode-punctuation.perl
-fi
-if [ ! -f remove-non-printing-char.perl ]; then
-  wget https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/remove-non-printing-char.perl
-fi
-if [ ! -f normalize-punctuation.perl ]; then
-  wget https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/normalize-punctuation.perl
-fi
-if [ ! -f clean-corpus-n.perl ]; then
-  wget https://github.com/moses-smt/mosesdecoder/raw/master/scripts/training/clean-corpus-n.perl
-fi
+echo 'Cloning Moses github repository (for tokenization scripts)...'
+git clone https://github.com/moses-smt/mosesdecoder.git
 
-python preprocess_lang8.py lang-8-20111007-L1-v2.dat lang-8-v2 lang-8-v2.keep src tgt
-for prefix in lang-8-v2 lang-8-v2.keep; do
+SCRIPTS=mosesdecoder/scripts
+
+python preprocess_lang8.py \
+  -d lang-8-20111007-L1-v2.dat \
+  -o lang-8-v2.out \
+  -k lang-8-v2.keep \
+  -j 4
+
+for pref in lang-8-v2.out lang-8-v2.keep; do
+  cut -f1 $pref > $pref.src
+  cut -f2 $pref > $pref.tgt
   for suf in src tgt; do
-    cat $prefix.$suf \
-      | perl replace-unicode-punctuation.perl \
-      | perl remove-non-printing-char.perl \
-      | perl normalize-punctuation.perl \
-      | python nltk_tokenize.py > $prefix.tok.$suf
+    cat $pref.$suf \
+      | perl $SCRIPTS/tokenizer/replace-unicode-punctuation.perl \
+      | perl $SCRIPTS/tokenizer/remove-non-printing-char.perl \
+      | perl $SCRIPTS/tokenizer/normalize-punctuation.perl \
+      | python nltk_tokenize.py > $pref.tok.$suf
   done
 done
-perl clean-corpus-n.perl lang-8-v2.tok src tgt lang-8-v2.clean 1 80
-perl clean-corpus-n.perl lang-8-v2.keep.tok src tgt lang-8-v2.keep.clean 1 80
+perl $SCRIPTS/training/clean-corpus-n.perl lang-8-v2.out.tok src tgt lang-8-v2.out.clean 1 80
+perl $SCRIPTS/training/clean-corpus-n.perl lang-8-v2.keep.tok src tgt lang-8-v2.keep.clean 1 80
