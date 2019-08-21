@@ -16,12 +16,12 @@ from tqdm import tqdm
 
 
 sline_pattern = re.compile(r'\[sline\].*?\[/sline\]')
-sline_tags = ['[f-blue]','[/f-blue]','[f-red]','[/f-red]','[f-bold]','[/f-bold]']
+color_tags = ['[f-blue]','[/f-blue]','[f-red]','[/f-red]','[f-bold]','[/f-bold]']
 sent_end = ['.','?','!','"',"'"]
 
 
 def remove_tags(line):
-    for tag in sline_tags:
+    for tag in color_tags:
         line = line.replace(tag, '')
     line = sline_pattern.sub('', line)
     line = line.replace('[/sline]', '')
