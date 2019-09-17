@@ -51,7 +51,7 @@ def process(line, is_aggresive=False):
                 tgt_sent = tgt_sent.strip()
                 tgt_sent = re.sub('\s+', ' ', tgt_sent)
                 if tgt_sent == src_sent:
-                    unchanged_pairs.append((src_sent, src_sent))
+                    unchanged_pairs.add((src_sent, src_sent))
                     continue
                 tgt_lang, _ = langid.classify(tgt_sent)
                 if tgt_lang != 'en':
